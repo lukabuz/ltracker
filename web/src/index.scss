@@ -1,0 +1,82 @@
+@font-face {
+  font-family: robotoRegular;
+  src: url(./assets/fonts/Roboto-Regular.ttf);
+}
+
+@font-face {
+  font-family: robotoBold;
+  src: url(./assets/fonts/Roboto-Bold.ttf);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-size: 16px;
+}
+
+* {
+  font-family: robotoRegular;
+}
+
+body {
+  background-color: #fafafa;
+}
+
+#root {
+  height: 100%;
+  position: relative;
+}
+
+.btn {
+  width: 100%;
+  border: 0;
+  background-color: #43a047;
+  font-family: robotoBold;
+  color: white;
+  padding: 10px;
+  font-size: 1.15rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  &:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    cursor: pointer;
+  }
+}
+
+.logo {
+  text-align: center;
+  font-size: 1.25rem;
+  font-family: rockwell, sans-serif;
+  font-weight: normal;
+}
+
+.login-screen {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .btn {
+    margin-top: 20px;
+  }
+
+  .login-wrapper {
+    width: 80%;
+  }
+
+  input {
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid #707070;
+    padding: 6px 3px;
+    margin-bottom: 15px;
+    width: 100%;
+    font-size: 1rem;
+    &:focus {
+      border-bottom: 1px solid #000000;
+      outline: 0;
+    }
+  }
+}
