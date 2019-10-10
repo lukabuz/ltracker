@@ -1,4 +1,3 @@
-
 # Firestore Database
 - users (collection)
 	- user (doc)
