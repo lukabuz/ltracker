@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
+import Lighter from './Lighter';
 
 export class LightersPage extends Component {
+  state = {
+    apiData: [],
+  };
+
   render() {
     return (
-      <div>
-        <div></div>
+      <div className="lighers-container">
+        <Lighter data={this.state.apiData} />
+        <Lighter data={this.state.apiData} />
+        <Lighter data={this.state.apiData} />
       </div>
     );
   }
