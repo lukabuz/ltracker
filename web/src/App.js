@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import LoginScreen from './Components/LoginScreen';
+import LoginPage from './Components/LoginPage';
+import LightersPage from './Components/LightersPage';
+import Navbar from './Components/Navbar';
+import BottomBar from './Components/BottomBar';
 
 export class App extends Component {
   state = {
@@ -23,14 +26,21 @@ export class App extends Component {
   render() {
     if (!this.state.isLoggedIn)
       return (
-        <LoginScreen
+        <LoginPage
           handleInput={this.handleChange}
           handleLogin={this.handleLogin}
           username={this.state.username}
           password={this.state.password}
         />
       );
-    return <div>App</div>;
+
+    return (
+      <>
+        <Navbar />
+        <LightersPage username={this.state.username} password={this.state.password} />
+        <BottomBar />
+      </>
+    );
   }
 }
 

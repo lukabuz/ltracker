@@ -17,6 +17,7 @@ body {
 
 * {
   font-family: robotoRegular;
+  box-sizing: border-box;
 }
 
 body {
@@ -50,6 +51,19 @@ body {
   font-weight: normal;
 }
 
+input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid #707070;
+  padding: 6px 3px;
+  width: 100%;
+  font-size: 1rem;
+  &:focus {
+    border-bottom: 1px solid #000000;
+    outline: 0;
+  }
+}
+
 .login-screen {
   display: flex;
   height: 100%;
@@ -67,16 +81,33 @@ body {
   }
 
   input {
-    background-color: transparent;
-    border: 0;
-    border-bottom: 1px solid #707070;
-    padding: 6px 3px;
     margin-bottom: 15px;
-    width: 100%;
-    font-size: 1rem;
-    &:focus {
-      border-bottom: 1px solid #000000;
-      outline: 0;
-    }
   }
+}
+
+.navbar {
+  position: relative;
+  display: flex;
+  border-bottom: 1px solid #c9c9c9;
+  padding: 10px;
+
+  .logo {
+    margin: 0;
+    width: 100%;
+  }
+
+  a {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.bottombar {
+  position: fixed;
+  bottom: 0;
+  padding: 10px;
+  border-top: 1px solid #c9c9c9;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
