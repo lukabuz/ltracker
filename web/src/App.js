@@ -3,12 +3,36 @@ import LoginPage from './Components/LoginPage';
 import LightersPage from './Components/LightersPage';
 import Navbar from './Components/Navbar';
 import BottomBar from './Components/BottomBar';
+import Modal from './Components/Modal';
 
 export class App extends Component {
   state = {
     isLoggedIn: false,
-    username: '',
+    username: 'Sam',
     password: '',
+    modal: {
+      isActive: false,
+      question: '',
+      message: '',
+      action: null,
+    },
+  };
+
+  disableModal = () => {
+    this.setState(state => ({
+      modal: { ...state.modal, isActive: false },
+    }));
+  };
+
+  setModal = (question, message, action) => {
+    this.setState({
+      modal: {
+        isActive: true,
+        question,
+        message,
+        action,
+      },
+    });
   };
 
   handleChange = e => {
@@ -36,8 +60,19 @@ export class App extends Component {
 
     return (
       <>
+        <Modal
+          isActive={this.state.modal.isActive}
+          question={this.state.modal.question}
+          message={this.state.modal.message}
+          action={this.state.modal.action}
+          disableModal={this.disableModal}
+        />
         <Navbar />
-        <LightersPage username={this.state.username} password={this.state.password} />
+        <LightersPage
+          username={this.state.username}
+          password={this.state.password}
+          setModal={this.setModal}
+        />
         <BottomBar />
       </>
     );

@@ -5,7 +5,7 @@ export class LoginPage extends Component {
     return (
       <div className="login-screen">
         <div className="login-wrapper">
-          <h1 class="logo">Ltracker</h1>
+          <h1 className="logo">Ltracker</h1>
           <input
             placeholder="username"
             name="username"
