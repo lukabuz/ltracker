@@ -24,6 +24,12 @@ body {
   background-color: #fafafa;
 }
 
+.bottom-padded {
+  height: 45px;
+  width: 100%;
+  background: transparent;
+}
+
 #root {
   height: 100%;
   position: relative;
@@ -82,6 +88,20 @@ input {
   }
 }
 
+textarea {
+  background-color: transparent;
+  resize: vertical;
+  border: 0;
+  border-bottom: 1px solid #707070;
+  padding: 6px 3px;
+  width: 100%;
+  font-size: 1rem;
+  &:focus {
+    border-bottom: 1px solid #000000;
+    outline: 0;
+  }
+}
+
 .login-screen {
   display: flex;
   height: 100%;
@@ -108,7 +128,7 @@ input {
   display: flex;
   border-bottom: 1px solid #c9c9c9;
   padding: 10px;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
   margin-bottom: 20px;
 
   .logo {
@@ -130,7 +150,7 @@ input {
   width: 100%;
   display: flex;
   justify-content: center;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
 }
 
 .push-left {
@@ -202,28 +222,6 @@ input {
   }
 }
 
-.lighters-container {
-  margin-bottom: 70px;
-}
-
-@media only screen and (min-width: 720px) {
-  .lighters-container {
-    width: 50%;
-    margin: 0 auto;
-    margin-bottom: 70px;
-  }
-
-  .lighter {
-    border: 1px solid #c9c9c9;
-  }
-
-  .login-screen {
-    .login-wrapper {
-      width: 50%;
-    }
-  }
-}
-
 .action-modal-container {
   position: absolute;
   display: flex;
@@ -284,6 +282,78 @@ input {
           background-color: transparent;
         }
       }
+    }
+  }
+}
+
+.lighter-add {
+  display: flex;
+  height: 80%;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  h1 {
+    text-align: center;
+    font-family: robotoBold;
+    font-weight: 400;
+    font-size: 1.25rem;
+  }
+
+  .btn {
+    margin-top: 20px;
+    background-color: #9c27b0;
+    color: white;
+  }
+
+  .lighter-add-wrapper {
+    width: 80%;
+  }
+
+  input {
+    margin-bottom: 15px;
+  }
+
+  textarea {
+    margin-top: 20px;
+  }
+}
+
+.lighter-gif-background {
+  position: absolute;
+  display: block;
+  background-image: url('./assets/img/tenor.gif');
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+}
+
+@media only screen and (min-width: 720px) {
+  .lighters-container {
+    width: 50%;
+    margin: 0 auto;
+  }
+
+  .lighter {
+    border: 1px solid #c9c9c9;
+  }
+
+  .login-screen {
+    .login-wrapper {
+      width: 50%;
+    }
+  }
+
+  .lighter-add {
+    .lighter-add-wrapper {
+      width: 50%;
     }
   }
 }

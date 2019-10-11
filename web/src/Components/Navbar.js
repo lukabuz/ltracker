@@ -1,13 +1,18 @@
 import React from 'react';
 import userImg from '../assets/img/user.svg';
+import homeImg from '../assets/img/home.svg';
+import { Link } from 'react-router-dom';
 
-function Navbar() {
+function Navbar({ username }) {
   return (
     <div className="navbar">
+      <Link to="/">
+        <img src={homeImg} alt="home" />
+      </Link>
       <h1 className="logo">Ltracker</h1>
-      <a href="google.com">
+      <Link to={`/user/${username}`}>
         <img src={userImg} alt="my profile" />
-      </a>
+      </Link>
     </div>
   );
 }

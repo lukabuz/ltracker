@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
+import { Route, BrowserRouter, Switch } from 'react-router-dom';
+
 import LoginPage from './Components/LoginPage';
 import LightersPage from './Components/LightersPage';
 import Navbar from './Components/Navbar';
 import BottomBar from './Components/BottomBar';
 import Modal from './Components/Modal';
+import AddLighterPage from './Components/AddLighterPage';
+import UserPage from './Components/UserPage';
 
 export class App extends Component {
   state = {
-    isLoggedIn: false,
+    isLoggedIn: true,
     username: 'Sam',
     password: '',
     modal: {
@@ -42,9 +46,24 @@ export class App extends Component {
   };
 
   handleLogin = e => {
-    this.setState(state => ({
-      isLoggedIn: !state.isLoggedIn,
-    }));
+    const user = {
+      username: this.state.username,
+      password: this.state.password,
+    };
+
+    fetch(
+      'https://us-central1-ltracker-f226f.cloudfunctions.net/ltracker-f226f/us-central1/logIn',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify(user),
+      }
+    )
+      .then(response => response.json())
+      .then(response => console.log(response))
+      .catch(e => console.log(e));
   };
 
   render() {
@@ -67,13 +86,48 @@ export class App extends Component {
           action={this.state.modal.action}
           disableModal={this.disableModal}
         />
-        <Navbar />
-        <LightersPage
-          username={this.state.username}
-          password={this.state.password}
-          setModal={this.setModal}
-        />
-        <BottomBar />
+
+        <BrowserRouter>
+          <Navbar username={this.state.username} />
+
+          <Switch>
+            <Route
+              exact
+              path="/add-lighter"
+              render={props => (
+                <AddLighterPage
+                  username={this.state.username}
+                  password={this.state.password}
+                  setModal={this.setModal}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              path="/user/:userId"
+              render={props => (
+                <UserPage
+                  username={this.state.username}
+                  password={this.state.password}
+                  setModal={this.setModal}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              render={props => (
+                <LightersPage
+                  username={this.state.username}
+                  password={this.state.password}
+                  setModal={this.setModal}
+                  {...props}
+                />
+              )}
+            />
+          </Switch>
+
+          <BottomBar />
+        </BrowserRouter>
       </>
     );
   }
