@@ -33,6 +33,7 @@ module.exports = class DataInterface {
 		let usersRef = this.ref.child("users");
 		usersRef
 			.child(added_by)
+			.child("pulbic_info")
 			.child("lighters_added")
 			.transaction(function(lighters_added) {
 				return (lighters_added || 0) + 1;
@@ -69,6 +70,7 @@ module.exports = class DataInterface {
 
 			usersRef
 				.child(lost_by)
+				.child("pulbic_info")
 				.child("lighters_lost")
 				.transaction(function(lighters_lost) {
 					return (lighters_lost || 0) + 1;
@@ -79,7 +81,10 @@ module.exports = class DataInterface {
 	}
 	getCreditScore(user) {
 		return new Promise((resolve, reject) => {
-			let userRef = this.ref.child("users").child(user);
+			let userRef = this.ref
+				.child("users")
+				.child(user)
+				.child("pulbic_info");
 			userRef
 				.on("value", function(snapshot) {
 					let user = snapshot.val();
@@ -108,19 +113,30 @@ module.exports = class DataInterface {
 	}
 	createUser(username, passwordHash) {
 		let usersRef = this.ref.child("users");
-		usersRef.child(username).set({
-			name: username,
-			lighters_added: 0,
-			lighters_lost: 0,
-			passwordHash: passwordHash
-		});
+		usersRef
+			.child(username)
+			.child("public_info")
+			.set({
+				name: username,
+				lighters_added: 0,
+				lighters_lost: 0
+			});
+		usersRef
+			.child(username)
+			.child("private_info")
+			.set({
+				passwordHash: passwordHash
+			});
 	}
 	async getUserPasswordHash(username) {
 		return new Promise(resolve => {
-			let userRef = this.ref.child("users").child(username);
+			let userRef = this.ref
+				.child("users")
+				.child(username)
+				.child("private_info");
 			userRef.on("value", function(snapshot) {
-				let user = snapshot.val();
-				resolve(user.passwordHash);
+				let private_info = snapshot.val();
+				resolve(private_info.passwordHash);
 			});
 		});
 	}
