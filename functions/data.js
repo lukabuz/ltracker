@@ -20,7 +20,7 @@ module.exports = class DataInterface {
 			color: color,
 			description: description,
 			date_added: Date.now(),
-			lost_by: null,
+			lost_by: "",
 			added_by: added_by,
 			current_owner: added_by
 		};
@@ -42,6 +42,7 @@ module.exports = class DataInterface {
 	// Create transaction for lighter
 	createTransaction(given_to, number) {
 		let lighterRef = this.ref.child("lighters").child(number);
+		lighterRef.update({ current_owner: given_to });
 		let ledger = lighterRef.child("ledger");
 		let date = Date.now();
 		ledger.child(date).set({
@@ -93,23 +94,15 @@ module.exports = class DataInterface {
 		return new Promise(resolve => {
 			let usersRef = this.ref.child("users").child(user);
 			usersRef.once("value", function(snapshot) {
-				if (snapshot.val() == null) {
-					resolve(true);
-				} else {
-					resolve(false);
-				}
+				resolve(snapshot.val() != null);
 			});
 		});
 	}
 	checkIfLighterExists(number) {
 		return new Promise(resolve => {
-			let lightersRef = this.ref.child("lighters");
+			let lightersRef = this.ref.child("lighters").child(number);
 			lightersRef.once("value", function(snapshot) {
-				if (snapshot.hasChild(number)) {
-					resolve(true);
-				} else {
-					resolve(false);
-				}
+				resolve(snapshot.val() != null);
 			});
 		});
 	}
