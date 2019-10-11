@@ -1,0 +1,20 @@
+//Todo
+
+-Integrate api to the login page
+-Store userdata locally for future use
+
+-Integrate api to the lighter submission page
+-Integrate api to claim/report buttons
+
+-Design a profile page
+-Integrate api to the profile page
+
+-Think of a way to convert (misspelled) lighter colors into css colors
+-Visualize the ledger for each lighter
+
+-Add a search functionality
+-Add a filter functionality
+
+-Organize components into seperate folders
+
+//Completed
