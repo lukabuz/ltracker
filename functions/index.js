@@ -37,7 +37,7 @@ register = async (username, password, dataProvider) => {
 let dataProvider = new DataInterface(admin.database());
 
 exports.logIn = functions.https.onRequest(async (request, response) => {
-	cors(request, response, async () => {
+	return cors(request, response, async () => {
 		let errors = validator.validate(request.body, [
 			{ variable: "username", variableText: "username", min: 0, max: 30 },
 			{ variable: "password", variableText: "password", min: 6, max: 1000 }
@@ -65,7 +65,7 @@ exports.logIn = functions.https.onRequest(async (request, response) => {
 });
 
 exports.createUser = functions.https.onRequest(async (request, response) => {
-	cors(request, response, async () => {
+	return cors(request, response, async () => {
 		let errors = validator.validate(request.body, [
 			{ variable: "username", variableText: "username", min: 0, max: 30 },
 			{ variable: "password", variableText: "password", min: 6, max: 1000 }
@@ -90,7 +90,7 @@ exports.createUser = functions.https.onRequest(async (request, response) => {
 });
 
 exports.createLighter = functions.https.onRequest(async (request, response) => {
-	cors(request, response, async () => {
+	return cors(request, response, async () => {
 		let errors = validator.validate(request.body, [
 			{ variable: "number", variableText: "number", min: 0, max: 5000 },
 			{ variable: "color", variableText: "color", min: 2, max: 10 },
@@ -135,7 +135,7 @@ exports.createLighter = functions.https.onRequest(async (request, response) => {
 });
 
 exports.claimLighter = functions.https.onRequest(async (request, response) => {
-	cors(request, response, async () => {
+	return cors(request, response, async () => {
 		let errors = validator.validate(request.body, [
 			{ variable: "number", variableText: "number", min: 0, max: 5000 },
 			{ variable: "username", variableText: "username", min: 0, max: 30 },
@@ -176,7 +176,7 @@ exports.claimLighter = functions.https.onRequest(async (request, response) => {
 });
 
 exports.reportLoss = functions.https.onRequest(async (request, response) => {
-	cors(request, response, async () => {
+	return cors(request, response, async () => {
 		let errors = validator.validate(request.body, [
 			{ variable: "number", variableText: "number", min: 0, max: 5000 },
 			{ variable: "username", variableText: "username", min: 0, max: 30 },
