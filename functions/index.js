@@ -67,7 +67,11 @@ app.use(cors());
 
 let dataProvider = new DataInterface(admin.database());
 
-app.post("/logIn", authMiddleware, async (request, response) => {
+app.post("/test", (req, res) => {
+	res.json({ hello: "hello" });
+});
+
+app.post("/logIn", async (request, response) => {
 	let errors = validator.validate(request.body, [
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
