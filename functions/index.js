@@ -1,6 +1,5 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const validator = require("html-request-validator");
 const hash = require("object-hash");
 const cors = require("cors");
 const express = require("express");
@@ -11,6 +10,7 @@ const DataInterface = require("./data.js");
 admin.initializeApp();
 
 authenticate = async (username, password, dataProvider) => {
+	console.log("AUTHENTICATE : " + username + " - " + password);
 	return new Promise(async resolve => {
 		let userExists = await dataProvider.checkIfUserExists(username);
 		if (!userExists) {
@@ -36,13 +36,9 @@ register = async (username, password, dataProvider) => {
 };
 
 authMiddleware = async (req, res, next) => {
-	let errors = validator.validate(req.body, [
-		{ variable: "username", variableText: "username", min: 0, max: 30 },
-		{ variable: "password", variableText: "password", min: 6, max: 1000 }
-	]);
-
-	if (errors.length !== 0) {
-		res.json({ status: "error", errors: errors });
+	const result = validationResult(req);
+	if (!result.isEmpty()) {
+		return res.status(422).json({ errors: result.array() });
 	}
 
 	let auth = await authenticate(
@@ -67,128 +63,78 @@ app.use(cors({ origin: true }));
 
 let dataProvider = new DataInterface(admin.database());
 
-app.post("/test", (req, res) => {
-	res.json({ hello: "hello" });
+app.post("/test", async (req, res) => {
+	res.json({ hello: "hello", body: req.body });
+	res.json({ hello: "hello", body: req.body });
 });
 
-app.post("/logIn", async (request, response) => {
-	let errors = validator.validate(request.body, [
-		{ variable: "username", variableText: "username", min: 0, max: 30 },
-		{ variable: "password", variableText: "password", min: 6, max: 1000 }
-	]);
-
-	if (errors.length !== 0) {
-		response.json({ status: "error", errors: errors });
-	}
-
+app.post("/logIn", async (req, res) => {
+	console.log(
+		"Main Function : " + req.body.username + " - " + req.body.password
+	);
 	let auth = await authenticate(
-		request.body.username,
-		request.body.password,
+		req.body.username,
+		req.body.password,
 		dataProvider
 	);
 
 	if (auth) {
-		response.json({ status: "success" });
+		res.json({ status: "success" });
 	} else {
-		response.json({
+		res.json({
 			status: "error",
 			errors: ["Authentication unsuccessful"]
 		});
 	}
 });
 
-app.post("/createUser", async (request, response) => {
-	let errors = validator.validate(request.body, [
-		{ variable: "username", variableText: "username", min: 0, max: 30 },
-		{ variable: "password", variableText: "password", min: 6, max: 1000 }
-	]);
-
-	if (errors.length !== 0) {
-		response.json({ status: "error", errors: errors });
-	}
-
-	let auth = await register(
-		request.body.username,
-		request.body.password,
-		dataProvider
-	);
+app.post("/createUser", async (req, res) => {
+	let auth = await register(req.body.username, req.body.password, dataProvider);
 
 	if (auth) {
-		response.json({ status: "success" });
+		res.json({ status: "success" });
 	} else {
-		response.json({ status: "error", errors: ["user already exists"] });
+		res.json({ status: "error", errors: ["user already exists"] });
 	}
 });
 
-app.post("/createLighter", authMiddleware, async (request, response) => {
-	let errors = validator.validate(request.body, [
-		{ variable: "number", variableText: "number", min: 0, max: 5000 },
-		{ variable: "color", variableText: "color", min: 2, max: 10 },
-		{ variable: "description", variableText: "description", min: 10 }
-	]);
-
-	if (errors.length !== 0) {
-		response.json({ status: "error", errors: errors });
-	}
-
-	let lighterExists = await dataProvider.checkIfLighterExists(
-		request.body.number
-	);
+app.post("/createLighter", [authMiddleware], async (req, res) => {
+	let lighterExists = await dataProvider.checkIfLighterExists(req.body.number);
 
 	if (lighterExists) {
-		response.json({ status: "error", errors: ["Lighter already exists."] });
+		res.json({ status: "error", errors: ["Lighter already exists."] });
 	}
 
 	dataProvider.addLighter(
-		request.body.number,
-		request.body.color,
-		request.body.description,
-		request.body.username
+		req.body.number,
+		req.body.color,
+		req.body.description,
+		req.body.username
 	);
 
-	response.json({ status: "success" });
+	res.json({ status: "success" });
 });
 
-app.post("/claimLighter", authMiddleware, async (request, response) => {
-	let errors = validator.validate(request.body, [
-		{ variable: "number", variableText: "number", min: 0, max: 5000 }
-	]);
-
-	if (errors.length !== 0) {
-		response.json({ status: "error", errors: errors });
-	}
-
-	let lighterExists = await dataProvider.checkIfLighterExists(
-		request.body.number
-	);
+app.post("/claimLighter", [authMiddleware], async (req, res) => {
+	let lighterExists = await dataProvider.checkIfLighterExists(req.body.number);
 
 	if (!lighterExists) {
-		response.json({ status: "error", errors: ["No such lighter."] });
+		res.json({ status: "error", errors: ["No such lighter."] });
 	}
 
-	dataProvider.createTransaction(request.body.username, request.body.number);
-	response.json({ status: "success" });
+	dataProvider.createTransaction(req.body.username, req.body.number);
+	res.json({ status: "success" });
 });
 
-app.post("/reportLoss", authMiddleware, async (request, response) => {
-	let errors = validator.validate(request.body, [
-		{ variable: "number", variableText: "number", min: 0, max: 5000 }
-	]);
-
-	if (errors.length !== 0) {
-		response.json({ status: "error", errors: errors });
-	}
-
-	let lighterExists = await dataProvider.checkIfLighterExists(
-		request.body.number
-	);
+app.post("/reportLoss", [authMiddleware], async (req, res) => {
+	let lighterExists = await dataProvider.checkIfLighterExists(req.body.number);
 
 	if (!lighterExists) {
-		response.json({ status: "error", errors: ["No such lighter."] });
+		res.json({ status: "error", errors: ["No such lighter."] });
 	}
 
-	dataProvider.reportLighterLoss(request.body.number);
-	response.json({ status: "success" });
+	dataProvider.reportLighterLoss(req.body.number);
+	res.json({ status: "success" });
 });
 
 exports.widgets = functions.https.onRequest(app);
