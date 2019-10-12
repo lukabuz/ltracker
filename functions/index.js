@@ -2,6 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const validator = require("html-request-validator");
 const hash = require("object-hash");
+const cors = require("cors")({ origin: true });
 
 const DataInterface = require("./data.js");
 
@@ -36,13 +37,13 @@ register = async (username, password, dataProvider) => {
 let dataProvider = new DataInterface(admin.database());
 
 exports.logIn = functions.https.onRequest(async (request, response) => {
+	cors(request, response, () => {
+
+	
 	let errors = validator.validate(request.body, [
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
-
-	response.set("Access-Control-Allow-Origin", "*");
-	response.set("Access-Control-Allow-Methods", "GET, POST");
 
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
@@ -60,15 +61,14 @@ exports.logIn = functions.https.onRequest(async (request, response) => {
 		response.json({ status: "error", errors: ["Authentication unsuccessful"] });
 	}
 });
+});
 
 exports.createUser = functions.https.onRequest(async (request, response) => {
+	cors(request, response, () => {
 	let errors = validator.validate(request.body, [
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
-
-	response.set("Access-Control-Allow-Origin", "*");
-	response.set("Access-Control-Allow-Methods", "GET, POST");
 
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
@@ -86,8 +86,10 @@ exports.createUser = functions.https.onRequest(async (request, response) => {
 		response.json({ status: "error", errors: ["user already exists"] });
 	}
 });
+});
 
 exports.createLighter = functions.https.onRequest(async (request, response) => {
+	cors(request, response, () => {
 	let errors = validator.validate(request.body, [
 		{ variable: "number", variableText: "number", min: 0, max: 5000 },
 		{ variable: "color", variableText: "color", min: 2, max: 10 },
@@ -95,9 +97,6 @@ exports.createLighter = functions.https.onRequest(async (request, response) => {
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
-
-	response.set("Access-Control-Allow-Origin", "*");
-	response.set("Access-Control-Allow-Methods", "GET, POST");
 
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
@@ -129,16 +128,15 @@ exports.createLighter = functions.https.onRequest(async (request, response) => {
 		response.json({ status: "error", errors: ["Authentication unsuccessful"] });
 	}
 });
+});
 
 exports.claimLighter = functions.https.onRequest(async (request, response) => {
+	cors(request, response, () => {
 	let errors = validator.validate(request.body, [
 		{ variable: "number", variableText: "number", min: 0, max: 5000 },
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
-
-	response.set("Access-Control-Allow-Origin", "*");
-	response.set("Access-Control-Allow-Methods", "GET, POST");
 
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
@@ -165,16 +163,15 @@ exports.claimLighter = functions.https.onRequest(async (request, response) => {
 		response.json({ status: "error", errors: ["Authentication unsuccessful"] });
 	}
 });
+});
 
 exports.reportLoss = functions.https.onRequest(async (request, response) => {
+	cors(request, response, () => {
 	let errors = validator.validate(request.body, [
 		{ variable: "number", variableText: "number", min: 0, max: 5000 },
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
-
-	response.set("Access-Control-Allow-Origin", "*");
-	response.set("Access-Control-Allow-Methods", "GET, POST");
 
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
@@ -200,4 +197,5 @@ exports.reportLoss = functions.https.onRequest(async (request, response) => {
 	} else {
 		response.json({ status: "error", errors: ["Authentication unsuccessful"] });
 	}
+});
 });
