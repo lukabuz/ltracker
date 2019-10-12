@@ -11,9 +11,9 @@ import UserPage from './Components/UserPage';
 
 export class App extends Component {
   state = {
-    isLoggedIn: true,
+    isLoggedIn: false,
     username: 'Sam',
-    password: '',
+    password: 'a',
     modal: {
       isActive: false,
       question: '',
@@ -46,22 +46,18 @@ export class App extends Component {
   };
 
   handleLogin = e => {
-    const user = {
-      username: this.state.username,
-      password: this.state.password,
-    };
+    let formData = new FormData();
 
-    fetch(
-      'https://us-central1-ltracker-f226f.cloudfunctions.net/ltracker-f226f/us-central1/logIn',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        body: JSON.stringify(user),
-      }
-    )
-      .then(response => response.json())
+    formData.append('username', this.state.username);
+    formData.append('password', this.state.password);
+
+    fetch('https://us-central1-ltracker-f226f.cloudfunctions.net/logIn', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData,
+    })
       .then(response => console.log(response))
       .catch(e => console.log(e));
   };
