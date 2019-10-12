@@ -2,7 +2,8 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const validator = require("html-request-validator");
 const hash = require("object-hash");
-const cors = require("cors")({ origin: true });
+const cors = require("cors");
+const express = require("express");
 
 const DataInterface = require("./data.js");
 
@@ -34,181 +35,149 @@ register = async (username, password, dataProvider) => {
 	});
 };
 
+authMiddleware = async (req, res, next) => {
+	let errors = validator.validate(req.body, [
+		{ variable: "username", variableText: "username", min: 0, max: 30 },
+		{ variable: "password", variableText: "password", min: 6, max: 1000 }
+	]);
+
+	if (errors.length !== 0) {
+		res.json({ status: "error", errors: errors });
+	}
+
+	let auth = await authenticate(
+		req.body.username,
+		req.body.password,
+		dataProvider
+	);
+
+	if (auth) {
+		next();
+	} else {
+		res.json({
+			status: "error",
+			errors: ["Authentication unsuccessful"]
+		});
+	}
+};
+
+const app = express();
+
+app.use(cors());
+
 let dataProvider = new DataInterface(admin.database());
 
-exports.logIn = functions.https.onRequest(async (request, response) => {
-	return cors(request, response, async () => {
-		let errors = validator.validate(request.body, [
-			{ variable: "username", variableText: "username", min: 0, max: 30 },
-			{ variable: "password", variableText: "password", min: 6, max: 1000 }
-		]);
+app.post("/logIn", authMiddleware, async (request, response) => {
+	let errors = validator.validate(request.body, [
+		{ variable: "username", variableText: "username", min: 0, max: 30 },
+		{ variable: "password", variableText: "password", min: 6, max: 1000 }
+	]);
 
-		if (errors.length !== 0) {
-			response.json({ status: "error", errors: errors });
-		}
+	if (errors.length !== 0) {
+		response.json({ status: "error", errors: errors });
+	}
 
-		let auth = await authenticate(
-			request.body.username,
-			request.body.password,
-			dataProvider
-		);
+	let auth = await authenticate(
+		request.body.username,
+		request.body.password,
+		dataProvider
+	);
 
-		if (auth) {
-			response.json({ status: "success" });
-		} else {
-			response.json({
-				status: "error",
-				errors: ["Authentication unsuccessful"]
-			});
-		}
-	});
+	if (auth) {
+		response.json({ status: "success" });
+	} else {
+		response.json({
+			status: "error",
+			errors: ["Authentication unsuccessful"]
+		});
+	}
 });
 
-exports.createUser = functions.https.onRequest(async (request, response) => {
-	return cors(request, response, async () => {
-		let errors = validator.validate(request.body, [
-			{ variable: "username", variableText: "username", min: 0, max: 30 },
-			{ variable: "password", variableText: "password", min: 6, max: 1000 }
-		]);
+app.post("/createUser", async (request, response) => {
+	let errors = validator.validate(request.body, [
+		{ variable: "username", variableText: "username", min: 0, max: 30 },
+		{ variable: "password", variableText: "password", min: 6, max: 1000 }
+	]);
 
-		if (errors.length !== 0) {
-			response.json({ status: "error", errors: errors });
-		}
+	if (errors.length !== 0) {
+		response.json({ status: "error", errors: errors });
+	}
 
-		let auth = await register(
-			request.body.username,
-			request.body.password,
-			dataProvider
-		);
+	let auth = await register(
+		request.body.username,
+		request.body.password,
+		dataProvider
+	);
 
-		if (auth) {
-			response.json({ status: "success" });
-		} else {
-			response.json({ status: "error", errors: ["user already exists"] });
-		}
-	});
+	if (auth) {
+		response.json({ status: "success" });
+	} else {
+		response.json({ status: "error", errors: ["user already exists"] });
+	}
 });
 
-exports.createLighter = functions.https.onRequest(async (request, response) => {
-	return cors(request, response, async () => {
-		let errors = validator.validate(request.body, [
-			{ variable: "number", variableText: "number", min: 0, max: 5000 },
-			{ variable: "color", variableText: "color", min: 2, max: 10 },
-			{ variable: "description", variableText: "description", min: 10 },
-			{ variable: "username", variableText: "username", min: 0, max: 30 },
-			{ variable: "password", variableText: "password", min: 6, max: 1000 }
-		]);
+app.post("/createLighter", authMiddleware, async (request, response) => {
+	let errors = validator.validate(request.body, [
+		{ variable: "number", variableText: "number", min: 0, max: 5000 },
+		{ variable: "color", variableText: "color", min: 2, max: 10 },
+		{ variable: "description", variableText: "description", min: 10 }
+	]);
 
-		if (errors.length !== 0) {
-			response.json({ status: "error", errors: errors });
-		}
+	if (errors.length !== 0) {
+		response.json({ status: "error", errors: errors });
+	}
 
-		let lighterExists = await dataProvider.checkIfLighterExists(
-			request.body.number
-		);
+	let lighterExists = await dataProvider.checkIfLighterExists(
+		request.body.number
+	);
 
-		if (lighterExists) {
-			response.json({ status: "error", errors: ["Lighter already exists."] });
-		}
+	if (lighterExists) {
+		response.json({ status: "error", errors: ["Lighter already exists."] });
+	}
 
-		let auth = await authenticate(
-			request.body.username,
-			request.body.password,
-			dataProvider
-		);
-
-		if (auth) {
-			dataProvider.addLighter(
-				request.body.number,
-				request.body.color,
-				request.body.description,
-				request.body.username
-			);
-			response.json({ status: "success" });
-		} else {
-			response.json({
-				status: "error",
-				errors: ["Authentication unsuccessful"]
-			});
-		}
-	});
+	response.json({ status: "success" });
 });
 
-exports.claimLighter = functions.https.onRequest(async (request, response) => {
-	return cors(request, response, async () => {
-		let errors = validator.validate(request.body, [
-			{ variable: "number", variableText: "number", min: 0, max: 5000 },
-			{ variable: "username", variableText: "username", min: 0, max: 30 },
-			{ variable: "password", variableText: "password", min: 6, max: 1000 }
-		]);
+app.post("/claimLighter", authMiddleware, async (request, response) => {
+	let errors = validator.validate(request.body, [
+		{ variable: "number", variableText: "number", min: 0, max: 5000 }
+	]);
 
-		if (errors.length !== 0) {
-			response.json({ status: "error", errors: errors });
-		}
+	if (errors.length !== 0) {
+		response.json({ status: "error", errors: errors });
+	}
 
-		let lighterExists = await dataProvider.checkIfLighterExists(
-			request.body.number
-		);
+	let lighterExists = await dataProvider.checkIfLighterExists(
+		request.body.number
+	);
 
-		if (!lighterExists) {
-			response.json({ status: "error", errors: ["No such lighter."] });
-		}
+	if (!lighterExists) {
+		response.json({ status: "error", errors: ["No such lighter."] });
+	}
 
-		let auth = await authenticate(
-			request.body.username,
-			request.body.password,
-			dataProvider
-		);
-
-		if (auth) {
-			dataProvider.createTransaction(
-				request.body.username,
-				request.body.number
-			);
-			response.json({ status: "success" });
-		} else {
-			response.json({
-				status: "error",
-				errors: ["Authentication unsuccessful"]
-			});
-		}
-	});
+	dataProvider.createTransaction(request.body.username, request.body.number);
+	response.json({ status: "success" });
 });
 
-exports.reportLoss = functions.https.onRequest(async (request, response) => {
-	return cors(request, response, async () => {
-		let errors = validator.validate(request.body, [
-			{ variable: "number", variableText: "number", min: 0, max: 5000 },
-			{ variable: "username", variableText: "username", min: 0, max: 30 },
-			{ variable: "password", variableText: "password", min: 6, max: 1000 }
-		]);
+app.post("/reportLoss", authMiddleware, async (request, response) => {
+	let errors = validator.validate(request.body, [
+		{ variable: "number", variableText: "number", min: 0, max: 5000 }
+	]);
 
-		if (errors.length !== 0) {
-			response.json({ status: "error", errors: errors });
-		}
+	if (errors.length !== 0) {
+		response.json({ status: "error", errors: errors });
+	}
 
-		let lighterExists = await dataProvider.checkIfLighterExists(
-			request.body.number
-		);
+	let lighterExists = await dataProvider.checkIfLighterExists(
+		request.body.number
+	);
 
-		if (!lighterExists) {
-			response.json({ status: "error", errors: ["No such lighter."] });
-		}
+	if (!lighterExists) {
+		response.json({ status: "error", errors: ["No such lighter."] });
+	}
 
-		let auth = await authenticate(
-			request.body.username,
-			request.body.password,
-			dataProvider
-		);
-
-		if (auth) {
-			dataProvider.reportLighterLoss(request.body.number);
-			response.json({ status: "success" });
-		} else {
-			response.json({
-				status: "error",
-				errors: ["Authentication unsuccessful"]
-			});
-		}
-	});
+	dataProvider.reportLighterLoss(request.body.number);
+	response.json({ status: "success" });
 });
+
+exports.widgets = functions.https.onRequest(app);
