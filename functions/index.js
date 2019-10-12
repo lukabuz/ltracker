@@ -3,14 +3,10 @@ const admin = require("firebase-admin");
 const validator = require("html-request-validator");
 const hash = require("object-hash");
 
-let serviceAccount = require("../key.json");
 const DataInterface = require("./data.js");
 
 //initialize firebase db
-admin.initializeApp({
-	credential: admin.credential.cert(serviceAccount),
-	databaseURL: "https://ltracker-f226f.firebaseio.com/"
-});
+admin.initializeApp();
 
 authenticate = async (username, password, dataProvider) => {
 	return new Promise(async resolve => {
@@ -45,6 +41,9 @@ exports.logIn = functions.https.onRequest(async (request, response) => {
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
 
+	response.set("Access-Control-Allow-Origin", "*");
+	response.set("Access-Control-Allow-Methods", "GET, POST");
+
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
 	}
@@ -67,6 +66,9 @@ exports.createUser = functions.https.onRequest(async (request, response) => {
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
+
+	response.set("Access-Control-Allow-Origin", "*");
+	response.set("Access-Control-Allow-Methods", "GET, POST");
 
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
@@ -93,6 +95,9 @@ exports.createLighter = functions.https.onRequest(async (request, response) => {
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
+
+	response.set("Access-Control-Allow-Origin", "*");
+	response.set("Access-Control-Allow-Methods", "GET, POST");
 
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
@@ -132,6 +137,9 @@ exports.claimLighter = functions.https.onRequest(async (request, response) => {
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
 
+	response.set("Access-Control-Allow-Origin", "*");
+	response.set("Access-Control-Allow-Methods", "GET, POST");
+
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
 	}
@@ -164,6 +172,9 @@ exports.reportLoss = functions.https.onRequest(async (request, response) => {
 		{ variable: "username", variableText: "username", min: 0, max: 30 },
 		{ variable: "password", variableText: "password", min: 6, max: 1000 }
 	]);
+
+	response.set("Access-Control-Allow-Origin", "*");
+	response.set("Access-Control-Allow-Methods", "GET, POST");
 
 	if (errors.length !== 0) {
 		response.json({ status: "error", errors: errors });
