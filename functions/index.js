@@ -63,7 +63,7 @@ authMiddleware = async (req, res, next) => {
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: true }));
 
 let dataProvider = new DataInterface(admin.database());
 
@@ -138,6 +138,13 @@ app.post("/createLighter", authMiddleware, async (request, response) => {
 	if (lighterExists) {
 		response.json({ status: "error", errors: ["Lighter already exists."] });
 	}
+
+	dataProvider.addLighter(
+		request.body.number,
+		request.body.color,
+		request.body.description,
+		request.body.username
+	);
 
 	response.json({ status: "success" });
 });
