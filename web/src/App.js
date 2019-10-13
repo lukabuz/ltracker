@@ -77,11 +77,12 @@ export class App extends Component {
             />
             <PriavteRoute
               path="/add-lighter"
-              component={() => (
+              component={props => (
                 <AddLighterPage
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}
+                  {...props}
                 />
               )}
             />
@@ -97,11 +98,12 @@ export class App extends Component {
               )}
             />
             <PriavteRoute
-              component={() => (
+              component={props => (
                 <LightersPage
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}
+                  {...props}
                 />
               )}
             />

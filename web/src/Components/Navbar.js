@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import userImg from '../assets/img/user.svg';
 import homeImg from '../assets/img/home.svg';
-import { Link } from 'react-router-dom';
 
 function Navbar({ username }) {
   return (

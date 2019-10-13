@@ -1,11 +1,10 @@
 //Todo
--Add a signout button
-
 -Integrate api to the lighter submission page
 -Integrate api to claim/report buttons
 
 -Design a profile page
 -Integrate api to the profile page
+-Add signout button to profile page
 
 -Think of a way to convert (misspelled) lighter colors into css colors
 -Visualize the ledger for each lighter
