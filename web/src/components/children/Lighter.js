@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function Lighter({ claim, report, username, data }) {
   return (
@@ -12,7 +13,9 @@ function Lighter({ claim, report, username, data }) {
         <div className="push-left"></div>
         <p className="lighter-owner">
           owned by{' '}
-          <a href="google">{username === data.current_owner ? 'You' : data.current_owner}</a>
+          <Link to={`/user/${data.current_owner}`}>
+            {username === data.current_owner ? 'You' : data.current_owner}
+          </Link>
         </p>
       </div>
       <div className="lighter-description">

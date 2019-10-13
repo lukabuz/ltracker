@@ -3,61 +3,55 @@ import React, { Component } from 'react';
 import Lighter from '../children/Lighter';
 import Loader from '../children/Loader';
 
+import { getLighterData, claimLighter, reportLighter } from '../../api/APIUtils';
+
 export class Lighters extends Component {
   state = {
-    lighters: {},
+    lighters: [],
   };
 
   componentDidMount() {
-    this.getLighterData();
+    this.updateLighters();
   }
 
-  getLighterData = () => {
-    fetch('https://ltracker-f226f.firebaseio.com/lighters.json')
-      .then(response => response.json())
-      .then(lighters => {
+  updateLighters = () => {
+    getLighterData()
+      .then(result => {
         this.setState({
-          lighters,
+          lighters: result,
         });
-      });
+      })
+      .catch(error => console.log(error));
   };
 
-  claimLighter = e => {
+  handleClaimLighter = e => {
     this.props.setModal(
       'Are you sure you want to claim a lighter?',
       'blabla blabla blabla',
       'confirm',
-      () => console.log('good job!')
+      () => claimLighter(() => console.log('aaaa'))
     );
   };
 
-  reportMissingLighter = e => {
+  handleReportLighter = e => {
     this.props.setModal(
       'Are you sure you want to report a lighter?',
       'blabla blabla blabla',
       'confirm',
-      () => console.log('good job!')
+      () => reportLighter(() => console.log('bbbb'))
     );
   };
 
-  objectToArray = obj => {
-    let output = [];
-    for (let key of Object.keys(obj)) {
-      output.push(obj[key]);
-    }
-    return output;
-  };
-
   render() {
-    if (Object.keys(this.state.lighters) < 1) return <Loader />;
+    if (this.state.lighters.length < 1) return <Loader />;
 
     return (
       <div className="lighters-container">
-        {this.objectToArray(this.state.lighters).map(lighter => {
+        {this.state.lighters.map(lighter => {
           return (
             <Lighter
-              claim={this.claimLighter}
-              report={this.reportMissingLighter}
+              claim={this.handleClaimLighter}
+              report={this.handleReportLighter}
               username={this.props.username}
               data={lighter}
               key={lighter.number}
