@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import Lighter from './Lighter';
-import Loader from './Loader';
+import Lighter from '../children/Lighter';
+import Loader from '../children/Loader';
 
 export class LightersPage extends Component {
   state = {

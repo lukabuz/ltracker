@@ -7,8 +7,25 @@ export class AddLighterPage extends Component {
     lighterDescription: '',
   };
 
-  handleSubmit = e => {
-    console.log('submit');
+  handleSubmit = async () => {
+    const formData = {
+      number: this.state.lighterNumber,
+      color: this.state.lighterColor,
+      description: this.state.lighterDescription,
+      username: this.props.username,
+      password: this.props.password,
+    };
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/widgets/createLighter`, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+      });
+      const body = await response.json();
+      console.log(body);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   handleChange = e => {

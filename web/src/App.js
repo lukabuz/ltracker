@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 
-import LoginPage from './Components/LoginPage';
-import LightersPage from './Components/LightersPage';
-import Navbar from './Components/Navbar';
-import BottomBar from './Components/BottomBar';
-import Modal from './Components/Modal';
-import AddLighterPage from './Components/AddLighterPage';
-import UserPage from './Components/UserPage';
-import PriavteRoute from './Components/PrivateRoute';
+import Login from './components/parents/Login';
+import Lighters from './components/parents/Lighters';
+import AddLighter from './components/parents/AddLighter';
+import User from './components/parents/User';
+
+import Navbar from './components/children/Navbar';
+import BottomBar from './components/children/BottomBar';
+import Modal from './components/children/Modal';
+import PriavteRoute from './components/children/PrivateRoute';
 
 export class App extends Component {
   state = {
@@ -66,7 +67,7 @@ export class App extends Component {
               exact
               path="/login"
               render={props => (
-                <LoginPage
+                <Login
                   username={this.state.username}
                   password={this.state.password}
                   handleInput={this.handleChange}
@@ -78,7 +79,7 @@ export class App extends Component {
             <PriavteRoute
               path="/add-lighter"
               component={props => (
-                <AddLighterPage
+                <AddLighter
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}
@@ -89,7 +90,7 @@ export class App extends Component {
             <PriavteRoute
               path="/user/:userId"
               component={props => (
-                <UserPage
+                <User
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}
@@ -99,7 +100,7 @@ export class App extends Component {
             />
             <PriavteRoute
               component={props => (
-                <LightersPage
+                <Lighters
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}

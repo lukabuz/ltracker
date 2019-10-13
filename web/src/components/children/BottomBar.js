@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import plusImg from '../assets/img/plus-square.svg';
+import plusImg from '../../assets/img/plus-square.svg';
 
 function Navbar() {
   return (
