@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export class UserPage extends Component {
+export class User extends Component {
   componentDidMount() {
     console.log(this.props.match.params.userId);
   }
@@ -10,4 +10,4 @@ export class UserPage extends Component {
   }
 }
 
-export default UserPage;
+export default User;

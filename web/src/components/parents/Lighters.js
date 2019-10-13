@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Lighter from '../children/Lighter';
 import Loader from '../children/Loader';
 
-export class LightersPage extends Component {
+export class Lighters extends Component {
   state = {
     lighters: {},
   };
@@ -69,4 +69,4 @@ export class LightersPage extends Component {
   }
 }
 
-export default LightersPage;
+export default Lighters;

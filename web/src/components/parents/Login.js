@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import auth from '../../auth';
 
-class LoginPage extends Component {
+class Login extends Component {
   success = () => {
     const { location, history } = this.props;
     let { from } = location.state || { from: { pathname: '/' } };
@@ -24,7 +24,9 @@ class LoginPage extends Component {
   };
 
   componentDidMount() {
-    this.handleLogin();
+    if (this.props.username.length > 0 && this.props.password.length > 0) {
+      this.handleLogin();
+    }
   }
 
   render() {
@@ -55,4 +57,4 @@ class LoginPage extends Component {
   }
 }
 
-export default withRouter(LoginPage);
+export default withRouter(Login);

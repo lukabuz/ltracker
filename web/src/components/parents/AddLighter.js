@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export class AddLighterPage extends Component {
+export class AddLighter extends Component {
   state = {
     lighterNumber: '',
     lighterColor: '',
@@ -70,4 +70,4 @@ export class AddLighterPage extends Component {
   }
 }
 
-export default AddLighterPage;
+export default AddLighter;
