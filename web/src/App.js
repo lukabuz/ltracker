@@ -8,16 +8,17 @@ import BottomBar from './Components/BottomBar';
 import Modal from './Components/Modal';
 import AddLighterPage from './Components/AddLighterPage';
 import UserPage from './Components/UserPage';
+import PriavteRoute from './Components/PrivateRoute';
 
 export class App extends Component {
   state = {
-    isLoggedIn: false,
-    username: 'Sam',
-    password: 'a',
+    username: localStorage.getItem('username') || '',
+    password: localStorage.getItem('password') || '',
     modal: {
       isActive: false,
       question: '',
       message: '',
+      type: 'confirm',
       action: null,
     },
   };
@@ -28,12 +29,13 @@ export class App extends Component {
     }));
   };
 
-  setModal = (question, message, action) => {
+  setModal = (question, message, type, action = null) => {
     this.setState({
       modal: {
         isActive: true,
         question,
         message,
+        type,
         action,
       },
     });
@@ -45,34 +47,7 @@ export class App extends Component {
     });
   };
 
-  handleLogin = e => {
-    let formData = new FormData();
-
-    formData.append('username', this.state.username);
-    formData.append('password', this.state.password);
-
-    fetch('https://us-central1-ltracker-f226f.cloudfunctions.net/logIn', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formData,
-    })
-      .then(response => console.log(response))
-      .catch(e => console.log(e));
-  };
-
   render() {
-    if (!this.state.isLoggedIn)
-      return (
-        <LoginPage
-          handleInput={this.handleChange}
-          handleLogin={this.handleLogin}
-          username={this.state.username}
-          password={this.state.password}
-        />
-      );
-
     return (
       <>
         <Modal
@@ -81,47 +56,55 @@ export class App extends Component {
           message={this.state.modal.message}
           action={this.state.modal.action}
           disableModal={this.disableModal}
+          type={this.state.modal.type}
         />
 
         <BrowserRouter>
           <Navbar username={this.state.username} />
-
           <Switch>
             <Route
               exact
-              path="/add-lighter"
+              path="/login"
               render={props => (
+                <LoginPage
+                  username={this.state.username}
+                  password={this.state.password}
+                  handleInput={this.handleChange}
+                  setModal={this.setModal}
+                  {...props}
+                />
+              )}
+            />
+            <PriavteRoute
+              path="/add-lighter"
+              component={() => (
                 <AddLighterPage
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}
-                  {...props}
                 />
               )}
             />
-            <Route
+            <PriavteRoute
               path="/user/:userId"
-              render={props => (
+              component={() => (
                 <UserPage
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}
-                  {...props}
                 />
               )}
             />
-            <Route
-              render={props => (
+            <PriavteRoute
+              component={() => (
                 <LightersPage
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}
-                  {...props}
                 />
               )}
             />
           </Switch>
-
           <BottomBar />
         </BrowserRouter>
       </>

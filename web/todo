@@ -1,7 +1,5 @@
 //Todo
-
--Integrate api to the login page
--Store userdata locally for future use
+-Add a signout button
 
 -Integrate api to the lighter submission page
 -Integrate api to claim/report buttons
@@ -17,5 +15,9 @@
 -Add a back key functionality
 
 -Organize components into seperate folders
+-Organize Modal component
 
 //Completed
+
+-Integrate api to the login page
+-Store userdata locally for future use

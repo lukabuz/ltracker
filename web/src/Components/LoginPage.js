@@ -1,6 +1,32 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import auth from '../auth.js';
 
-export class LoginPage extends Component {
+class LoginPage extends Component {
+  success = () => {
+    const { location, history } = this.props;
+    let { from } = location.state || { from: { pathname: '/' } };
+
+    history.replace(from);
+  };
+
+  failure = () => {
+    this.props.setModal('Error', 'Invalid login credentials', 'alert');
+  };
+
+  handleLogin = () => {
+    const credentials = {
+      username: this.props.username,
+      password: this.props.password,
+    };
+
+    auth.login(credentials, this.success, this.failure);
+  };
+
+  componentDidMount() {
+    this.handleLogin();
+  }
+
   render() {
     return (
       <div className="login-screen">
@@ -20,7 +46,7 @@ export class LoginPage extends Component {
             onChange={this.props.handleInput}
             value={this.props.password}
           />
-          <button className="btn" onClick={this.props.handleLogin}>
+          <button className="btn" onClick={this.handleLogin}>
             SIGN IN
           </button>
         </div>
@@ -29,4 +55,4 @@ export class LoginPage extends Component {
   }
 }
 
-export default LoginPage;
+export default withRouter(LoginPage);

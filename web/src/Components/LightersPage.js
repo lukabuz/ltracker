@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import Lighter from './Lighter';
 import Loader from './Loader';
 
@@ -22,14 +23,20 @@ export class LightersPage extends Component {
   };
 
   claimLighter = e => {
-    this.props.setModal('Are you sure you want to claim a lighter?', 'blabla blabla blabla', () =>
-      console.log('good job!')
+    this.props.setModal(
+      'Are you sure you want to claim a lighter?',
+      'blabla blabla blabla',
+      'confirm',
+      () => console.log('good job!')
     );
   };
 
   reportMissingLighter = e => {
-    this.props.setModal('Are you sure you want to report a lighter?', 'blabla blabla blabla', () =>
-      console.log('good job!')
+    this.props.setModal(
+      'Are you sure you want to report a lighter?',
+      'blabla blabla blabla',
+      'confirm',
+      () => console.log('good job!')
     );
   };
 
