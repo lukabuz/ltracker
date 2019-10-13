@@ -87,11 +87,12 @@ export class App extends Component {
             />
             <PriavteRoute
               path="/user/:userId"
-              component={() => (
+              component={props => (
                 <UserPage
                   username={this.state.username}
                   password={this.state.password}
                   setModal={this.setModal}
+                  {...props}
                 />
               )}
             />
