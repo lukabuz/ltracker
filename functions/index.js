@@ -3,6 +3,7 @@ const admin = require("firebase-admin");
 const hash = require("object-hash");
 const cors = require("cors");
 const express = require("express");
+const bodyParser = require("body-parser");
 
 const DataInterface = require("./data.js");
 
@@ -10,7 +11,6 @@ const DataInterface = require("./data.js");
 admin.initializeApp();
 
 authenticate = async (username, password, dataProvider) => {
-	console.log("AUTHENTICATE : " + username + " - " + password);
 	return new Promise(async resolve => {
 		let userExists = await dataProvider.checkIfUserExists(username);
 		if (!userExists) {
@@ -36,16 +36,13 @@ register = async (username, password, dataProvider) => {
 };
 
 authMiddleware = async (req, res, next) => {
+	let body = JSON.parse(req.body);
 	const result = validationResult(req);
 	if (!result.isEmpty()) {
 		return res.status(422).json({ errors: result.array() });
 	}
 
-	let auth = await authenticate(
-		req.body.username,
-		req.body.password,
-		dataProvider
-	);
+	let auth = await authenticate(body.username, body.password, dataProvider);
 
 	if (auth) {
 		next();
@@ -60,6 +57,8 @@ authMiddleware = async (req, res, next) => {
 const app = express();
 
 app.use(cors({ origin: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 let dataProvider = new DataInterface(admin.database());
 
@@ -69,14 +68,8 @@ app.post("/test", async (req, res) => {
 });
 
 app.post("/logIn", async (req, res) => {
-	console.log(
-		"Main Function : " + req.body.username + " - " + req.body.password
-	);
-	let auth = await authenticate(
-		req.body.username,
-		req.body.password,
-		dataProvider
-	);
+	let body = JSON.parse(req.body);
+	let auth = await authenticate(body.username, body.password, dataProvider);
 
 	if (auth) {
 		res.json({ status: "success" });
@@ -89,7 +82,8 @@ app.post("/logIn", async (req, res) => {
 });
 
 app.post("/createUser", async (req, res) => {
-	let auth = await register(req.body.username, req.body.password, dataProvider);
+	let body = JSON.parse(req.body);
+	let auth = await register(body.username, body.password, dataProvider);
 
 	if (auth) {
 		res.json({ status: "success" });
@@ -99,41 +93,44 @@ app.post("/createUser", async (req, res) => {
 });
 
 app.post("/createLighter", [authMiddleware], async (req, res) => {
-	let lighterExists = await dataProvider.checkIfLighterExists(req.body.number);
+	let body = JSON.parse(req.body);
+	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
 	if (lighterExists) {
 		res.json({ status: "error", errors: ["Lighter already exists."] });
 	}
 
 	dataProvider.addLighter(
-		req.body.number,
-		req.body.color,
-		req.body.description,
-		req.body.username
+		body.number,
+		body.color,
+		body.description,
+		body.username
 	);
 
 	res.json({ status: "success" });
 });
 
 app.post("/claimLighter", [authMiddleware], async (req, res) => {
-	let lighterExists = await dataProvider.checkIfLighterExists(req.body.number);
+	let body = JSON.parse(req.body);
+	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
 	if (!lighterExists) {
 		res.json({ status: "error", errors: ["No such lighter."] });
 	}
 
-	dataProvider.createTransaction(req.body.username, req.body.number);
+	dataProvider.createTransaction(body.username, body.number);
 	res.json({ status: "success" });
 });
 
 app.post("/reportLoss", [authMiddleware], async (req, res) => {
-	let lighterExists = await dataProvider.checkIfLighterExists(req.body.number);
+	let body = JSON.parse(req.body);
+	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
 	if (!lighterExists) {
 		res.json({ status: "error", errors: ["No such lighter."] });
 	}
 
-	dataProvider.reportLighterLoss(req.body.number);
+	dataProvider.reportLighterLoss(body.number);
 	res.json({ status: "success" });
 });
 
