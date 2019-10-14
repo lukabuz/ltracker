@@ -11,8 +11,8 @@ class Login extends Component {
     history.replace(from);
   };
 
-  failure = () => {
-    this.props.setModal('Error', ['Invalid login credentials'], 'alert');
+  failure = errors => {
+    this.props.setModal('Error', errors, 'alert');
   };
 
   handleLogin = e => {

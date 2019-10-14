@@ -16,8 +16,10 @@ class Auth {
         localStorage.setItem('username', credentials.username);
         localStorage.setItem('password', credentials.password);
         successCb();
+      } else if (body.status === 'error') {
+        failureCb(body.errors);
       } else {
-        failureCb();
+        failureCb(['Unexpected error']);
       }
     } catch (error) {
       console.log(error);
