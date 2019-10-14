@@ -54,8 +54,8 @@ export class User extends Component {
               rating={4.3}
               starDimension="25px"
               starSpacing="3px"
-              starRatedColor="#ffb300"
-              starEmptyColor="#eeeeee"
+              starRatedColor="#e65100"
+              starEmptyColor="#424242"
             />
             <span>(4.3)</span>
           </div>
