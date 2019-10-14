@@ -1,9 +1,6 @@
 //Todo
--Integrate api to the lighter submission page
--Integrate api to claim/report buttons
 
 -Design a profile page
--Integrate api to the profile page
 -Add signout button to profile page
 
 -Think of a way to convert (misspelled) lighter colors into css colors
@@ -13,10 +10,15 @@
 -Add a filter functionality
 -Add a back key functionality
 
--Organize components into seperate folders
--Organize Modal component
-
 //Completed
 
 -Integrate api to the login page
 -Store userdata locally for future use
+
+-Integrate api to the lighter submission page
+-Integrate api to claim/report buttons
+
+-Integrate api to the profile page
+
+-Organize components into seperate folders
+-Organize Modal component

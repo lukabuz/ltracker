@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Lighter({ claim, report, username, data }) {
+function Lighter({ claim, report, username, data, lost = false }) {
   return (
     <div className="lighter">
       <div className="lighter-header">
@@ -21,16 +21,18 @@ function Lighter({ claim, report, username, data }) {
       <div className="lighter-description">
         <p>{data.description}</p>
       </div>
-      <div className="lighter-buttons">
-        <button className="red" name={data.number} onClick={report}>
-          report missing
-        </button>
-        {username === data.current_owner ? null : (
-          <button className="green" name={data.number} onClick={claim}>
-            claim
+      {!lost ? (
+        <div className="lighter-buttons">
+          <button className="red" name={data.number} onClick={report}>
+            report missing
           </button>
-        )}
-      </div>
+          {username === data.current_owner ? null : (
+            <button className="green" name={data.number} onClick={claim}>
+              claim
+            </button>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

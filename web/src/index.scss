@@ -199,13 +199,13 @@ textarea {
 
   .lighter-description {
     padding: 15px 30px;
-    border-bottom: 1px solid #c9c9c9;
   }
 
   .lighter-buttons {
     padding: 15px 30px;
     display: flex;
     justify-content: flex-end;
+    border-top: 1px solid #c9c9c9;
 
     button {
       background: transparent;
@@ -333,6 +333,15 @@ textarea {
   background-size: cover;
   background-position: center;
   opacity: 0.15;
+}
+
+.lighters-container {
+  h3 {
+    font-family: robotoBold;
+    font-weight: 400;
+    font-size: 1.25rem;
+    text-align: center;
+  }
 }
 
 @media only screen and (min-width: 720px) {

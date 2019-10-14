@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+
+import { addLighter } from '../../api/APIUtils';
 
 export class AddLighter extends Component {
   state = {
@@ -7,25 +10,27 @@ export class AddLighter extends Component {
     lighterDescription: '',
   };
 
-  handleSubmit = async () => {
-    const formData = {
-      number: this.state.lighterNumber,
-      color: this.state.lighterColor,
-      description: this.state.lighterDescription,
-      username: this.props.username,
-      password: this.props.password,
-    };
+  handleSubmit = () => {
+    addLighter(
+      this.props.username,
+      this.props.password,
+      this.state.lighterNumber,
+      this.state.lighterColor,
+      this.state.lighterDescription
+    )
+      .then(result => {
+        if (result.status === 'success') {
+          const { location, history } = this.props;
+          let { from } = location.state || { from: { pathname: '/' } };
 
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/widgets/createLighter`, {
-        method: 'POST',
-        body: JSON.stringify(formData),
-      });
-      const body = await response.json();
-      console.log(body);
-    } catch (e) {
-      console.log(e);
-    }
+          history.replace(from);
+
+          this.props.setModal('Success', ['You have successfuly added a lighter'], 'alert');
+        } else if (result.status === 'error') {
+          this.props.setModal('Error', result.errors, 'alert');
+        }
+      })
+      .catch(error => console.log(error));
   };
 
   handleChange = e => {
@@ -70,4 +75,4 @@ export class AddLighter extends Component {
   }
 }
 
-export default AddLighter;
+export default withRouter(AddLighter);

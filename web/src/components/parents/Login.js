@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+
 import auth from '../../auth';
 
 class Login extends Component {
@@ -11,7 +12,7 @@ class Login extends Component {
   };
 
   failure = () => {
-    this.props.setModal('Error', 'Invalid login credentials', 'alert');
+    this.props.setModal('Error', ['Invalid login credentials'], 'alert');
   };
 
   handleLogin = () => {

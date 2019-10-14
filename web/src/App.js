@@ -11,15 +11,16 @@ import BottomBar from './components/children/BottomBar';
 import Modal from './components/children/Modal';
 import PrivateRoute from './components/children/PrivateRoute';
 
+import { claimLighter, reportLighter } from './api/APIUtils';
+
 export class App extends Component {
   state = {
-    test: 't',
     username: localStorage.getItem('username') || '',
     password: localStorage.getItem('password') || '',
     modal: {
       isActive: false,
       title: '',
-      message: '',
+      messages: [],
       type: 'confirm',
       action: null,
     },
@@ -31,12 +32,12 @@ export class App extends Component {
     }));
   };
 
-  setModal = (title, message, type, action = null) => {
+  setModal = (title, messages, type, action = null) => {
     this.setState({
       modal: {
         isActive: true,
         title,
-        message,
+        messages,
         type,
         action,
       },
@@ -49,13 +50,75 @@ export class App extends Component {
     });
   };
 
+  handleClaimLighter = (e, update) => {
+    const lighterNumber = e.target.name;
+
+    const onConfirm = () => {
+      claimLighter(this.state.username, this.state.password, lighterNumber)
+        .then(result => {
+          if (result.status === 'success') {
+            this.setModal(
+              'Success',
+              [`You have successfuly claimed #${lighterNumber} lighter.`],
+              'alert'
+            );
+            update();
+          } else if (result.status === 'error') {
+            this.setModal('Error', result.errors, 'alert');
+          }
+        })
+        .catch(error => console.log(error));
+    };
+
+    this.setModal(
+      `Are you sure you want to claim #${lighterNumber} lighter?`,
+      [
+        'Claiming a lighter is one of the biggest responsibilities you can take in your entire life.',
+        'Please proceed with caution.',
+      ],
+      'confirm',
+      onConfirm
+    );
+  };
+
+  handleReportLighter = (e, update) => {
+    const lighterNumber = e.target.name;
+
+    const onConfirm = () => {
+      reportLighter(this.state.username, this.state.password, lighterNumber)
+        .then(result => {
+          if (result.status === 'success') {
+            this.setModal(
+              'Success',
+              [`You have successfuly reported a loss on #${lighterNumber} lighter.`],
+              'alert'
+            );
+            update();
+          } else if (result.status === 'error') {
+            this.setModal('Error', result.errors, 'alert');
+          }
+        })
+        .catch(error => console.log(error));
+    };
+
+    this.setModal(
+      `Are you sure you want to report #${lighterNumber} lighter?`,
+      [
+        'Reporting a lighter is one of the biggest responsibilities you can take in your entire life.',
+        'Please proceed with caution.',
+      ],
+      'confirm',
+      onConfirm
+    );
+  };
+
   render() {
     return (
       <BrowserRouter>
         <Modal
           isActive={this.state.modal.isActive}
           title={this.state.modal.title}
-          message={this.state.modal.message}
+          messages={this.state.modal.messages}
           action={this.state.modal.action}
           disableModal={this.disableModal}
           type={this.state.modal.type}
@@ -90,6 +153,8 @@ export class App extends Component {
             path="/user/:userId"
             component={props => (
               <User
+                handleClaimLighter={this.handleClaimLighter}
+                handleReportLighter={this.handleReportLighter}
                 username={this.state.username}
                 password={this.state.password}
                 setModal={this.setModal}
@@ -100,10 +165,12 @@ export class App extends Component {
           <PrivateRoute
             component={props => (
               <Lighters
-                {...props}
+                handleClaimLighter={this.handleClaimLighter}
+                handleReportLighter={this.handleReportLighter}
                 username={this.state.username}
                 password={this.state.password}
                 setModal={this.setModal}
+                {...props}
               />
             )}
           />

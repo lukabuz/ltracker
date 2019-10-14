@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { getLighterData, getUserData, claimLighter, reportLighter } from '../../api/APIUtils';
 
 import Lighter from '../children/Lighter';
 import Loader from '../children/Loader';
 
+import { getLighterData, getUserData } from '../../api/APIUtils';
 import { objectToArray } from '../../helperFunctions';
 
 export class User extends Component {
@@ -16,7 +16,7 @@ export class User extends Component {
     getLighterData()
       .then(result => {
         this.setState({
-          lighters: result,
+          lighters: objectToArray(result),
         });
       })
       .catch(error => console.log(error));
@@ -30,24 +30,6 @@ export class User extends Component {
       .catch(error => console.log(error));
   };
 
-  handleClaimLighter = e => {
-    this.props.setModal(
-      'Are you sure you want to claim a lighter?',
-      'blabla blabla blabla',
-      'confirm',
-      () => claimLighter(() => console.log('aaaa'))
-    );
-  };
-
-  handleReportLighter = e => {
-    this.props.setModal(
-      'Are you sure you want to report a lighter?',
-      'blabla blabla blabla',
-      'confirm',
-      () => reportLighter(() => console.log('bbbb'))
-    );
-  };
-
   componentDidMount() {
     this.fetchApi();
   }
@@ -55,22 +37,48 @@ export class User extends Component {
   render() {
     if (this.state.lighters.length < 1 || this.state.users.length < 1) return <Loader />;
 
+    const userPageURL = this.props.match.params.userId;
+    const ownedLighters = this.state.lighters.filter(
+      lighter => lighter.current_owner === userPageURL && lighter.lost_by === ''
+    );
+    const lostLighters = this.state.lighters.filter(lighter => lighter.lost_by === userPageURL);
+
     return (
-      <div className="lighters-container">
-        {this.state.lighters
-          .filter(lighter => lighter.current_owner === this.props.match.params.userId)
-          .map(lighter => {
+      <>
+        <div className="lighters-container">
+          <h3>
+            {userPageURL === this.props.username
+              ? `You own ${ownedLighters.length} lighter(s):`
+              : `${userPageURL} owns ${ownedLighters.length} lighter(s):`}
+          </h3>
+          {ownedLighters.map(lighter => {
             return (
               <Lighter
-                claim={this.handleClaimLighter}
-                report={this.handleReportLighter}
+                claim={e => this.props.handleClaimLighter(e, this.fetchApi)}
+                report={e => this.props.handleReportLighter(e, this.fetchApi)}
                 username={this.props.username}
                 data={lighter}
                 key={lighter.number}
               />
             );
           })}
-      </div>
+          <h3>
+            {userPageURL === this.props.username
+              ? `You have lost ${lostLighters.length} lighter(s):`
+              : `${userPageURL} has lost ${lostLighters.length} lighter(s):`}
+          </h3>
+          {lostLighters.map(lighter => {
+            return (
+              <Lighter
+                username={this.props.username}
+                data={lighter}
+                key={lighter.number}
+                lost={true}
+              />
+            );
+          })}
+        </div>
+      </>
     );
   }
 }

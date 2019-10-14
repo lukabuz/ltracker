@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Modal({ isActive, title, message, type, action, disableModal }) {
+function Modal({ isActive, title, messages, type, action, disableModal }) {
   if (!isActive) return null;
 
   const buttons =
@@ -24,11 +24,13 @@ function Modal({ isActive, title, message, type, action, disableModal }) {
       </div>
     );
 
+  messages = messages.map((message, index) => <p key={index}>{message}</p>);
+
   return (
     <div className="action-modal-container">
       <div className="action-modal">
         <h1>{title}</h1>
-        <p>{message}</p>
+        {messages}
         {buttons}
       </div>
     </div>
