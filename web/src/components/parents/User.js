@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import StarRatings from 'react-star-ratings';
 
 import Lighter from '../children/Lighter';
 import Loader from '../children/Loader';
@@ -10,7 +9,7 @@ import { objectToArray } from '../../helperFunctions';
 export class User extends Component {
   state = {
     lighters: [],
-    users: [],
+    users: {},
   };
 
   fetchApi = () => {
@@ -25,7 +24,7 @@ export class User extends Component {
     getUserData()
       .then(result => {
         this.setState({
-          users: objectToArray(result),
+          users: result,
         });
       })
       .catch(error => console.log(error));
@@ -36,7 +35,8 @@ export class User extends Component {
   }
 
   render() {
-    if (this.state.lighters.length < 1 || this.state.users.length < 1) return <Loader />;
+    if (this.state.lighters.length < 1 || Object.keys(this.state.users).length < 1)
+      return <Loader />;
 
     const userPageURL = this.props.match.params.userId;
     const ownedLighters = this.state.lighters.filter(
@@ -50,14 +50,7 @@ export class User extends Component {
           <div className="stars-container">
             <h4>{userPageURL}</h4>
             <div className="push-left"></div>
-            <StarRatings
-              rating={4.3}
-              starDimension="25px"
-              starSpacing="3px"
-              starRatedColor="#e65100"
-              starEmptyColor="#424242"
-            />
-            <span>(4.3)</span>
+            <span>credit score: {this.state.users[userPageURL].public_info.credit_score}</span>
           </div>
           <h3>
             {userPageURL === this.props.username
