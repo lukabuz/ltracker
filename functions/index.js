@@ -37,11 +37,6 @@ register = async (username, password, dataProvider) => {
 
 authMiddleware = async (req, res, next) => {
 	let body = JSON.parse(req.body);
-	const result = validationResult(req);
-	if (!result.isEmpty()) {
-		return res.status(422).json({ errors: result.array() });
-	}
-
 	let auth = await authenticate(body.username, body.password, dataProvider);
 
 	if (auth) {
