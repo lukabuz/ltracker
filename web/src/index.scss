@@ -198,6 +198,9 @@ textarea {
   }
 
   .lighter-description {
+    p:not(:last-child) {
+      margin-bottom: 5px;
+    }
     padding: 15px 30px;
   }
 

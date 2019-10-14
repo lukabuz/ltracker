@@ -1,4 +1,5 @@
 import React from 'react';
+import nl2br from 'react-nl2br';
 import { Link } from 'react-router-dom';
 
 function Lighter({ claim, report, username, data, lost = false }) {
@@ -19,7 +20,7 @@ function Lighter({ claim, report, username, data, lost = false }) {
         </p>
       </div>
       <div className="lighter-description">
-        <p>{data.description}</p>
+        <p>{nl2br(data.description)}</p>
       </div>
       {!lost ? (
         <div className="lighter-buttons">
