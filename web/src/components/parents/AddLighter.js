@@ -10,7 +10,9 @@ export class AddLighter extends Component {
     lighterDescription: '',
   };
 
-  handleSubmit = () => {
+  handleSubmit = e => {
+    e.preventDefault();
+
     addLighter(
       this.props.username,
       this.props.password,
@@ -45,30 +47,30 @@ export class AddLighter extends Component {
         <div className="lighter-gif-background"></div>
         <div className="lighter-add-wrapper">
           <h1>Add a lighter</h1>
-          <input
-            placeholder="Id"
-            name="lighterNumber"
-            type="text"
-            onChange={this.handleChange}
-            value={this.state.lighterNumber}
-          />
-          <input
-            placeholder="Color"
-            name="lighterColor"
-            type="text"
-            onChange={this.handleChange}
-            value={this.state.lighterColor}
-          />
-          <textarea
-            placeholder="Lighter description..."
-            name="lighterDescription"
-            onChange={this.handleChange}
-            value={this.state.lighterDescription}
-            rows="3"
-          />
-          <button className="btn" onClick={this.handleSubmit}>
-            Submit
-          </button>
+          <form onSubmit={this.handleSubmit}>
+            <input
+              placeholder="Id"
+              name="lighterNumber"
+              type="text"
+              onChange={this.handleChange}
+              value={this.state.lighterNumber}
+            />
+            <input
+              placeholder="Color"
+              name="lighterColor"
+              type="text"
+              onChange={this.handleChange}
+              value={this.state.lighterColor}
+            />
+            <textarea
+              placeholder="Lighter description..."
+              name="lighterDescription"
+              onChange={this.handleChange}
+              value={this.state.lighterDescription}
+              rows="3"
+            />
+            <input type="submit" className="btn" value="Submit" />
+          </form>
         </div>
       </div>
     );

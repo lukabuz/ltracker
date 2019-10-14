@@ -15,7 +15,8 @@ class Login extends Component {
     this.props.setModal('Error', ['Invalid login credentials'], 'alert');
   };
 
-  handleLogin = () => {
+  handleLogin = e => {
+    if (e) e.preventDefault();
     const credentials = {
       username: this.props.username,
       password: this.props.password,
@@ -35,23 +36,23 @@ class Login extends Component {
       <div className="login-screen">
         <div className="login-wrapper">
           <h1 className="logo">Ltracker</h1>
-          <input
-            placeholder="username"
-            name="username"
-            type="text"
-            onChange={this.props.handleInput}
-            value={this.props.username}
-          />
-          <input
-            placeholder="password"
-            name="password"
-            type="password"
-            onChange={this.props.handleInput}
-            value={this.props.password}
-          />
-          <button className="btn" onClick={this.handleLogin}>
-            SIGN IN
-          </button>
+          <form onSubmit={this.handleLogin}>
+            <input
+              placeholder="username"
+              name="username"
+              type="text"
+              onChange={this.props.handleInput}
+              value={this.props.username}
+            />
+            <input
+              placeholder="password"
+              name="password"
+              type="password"
+              onChange={this.props.handleInput}
+              value={this.props.password}
+            />
+            <input type="submit" className="btn" value="SIGN IN" />
+          </form>
         </div>
       </div>
     );
