@@ -4,6 +4,7 @@ const hash = require("object-hash");
 const cors = require("cors");
 const express = require("express");
 const bodyParser = require("body-parser");
+const validator = require("html-request-validator");
 
 const DataInterface = require("./data.js");
 
@@ -45,16 +46,25 @@ register = async (username, password, dataProvider) => {
 };
 
 authMiddleware = async (req, res, next) => {
-	let body = req.body;
-	let auth = await authenticate(body.username, body.password, dataProvider);
+	let errors = validator.validate(req.body, [
+		{ variable: "username", variableText: "username", min: 0, max: 30 },
+		{ variable: "password", variableText: "password", min: 6, max: 1000 }
+	]);
 
-	if (auth) {
-		next();
+	if (errors.length !== 0) {
+		res.json({ status: "error", errors: errors });
 	} else {
-		res.json({
-			status: "error",
-			errors: ["Authentication unsuccessful"]
-		});
+		let body = req.body;
+		let auth = await authenticate(body.username, body.password, dataProvider);
+
+		if (auth) {
+			next();
+		} else {
+			res.json({
+				status: "error",
+				errors: ["Authentication unsuccessful"]
+			});
+		}
 	}
 };
 
@@ -75,6 +85,15 @@ app.use(parsingMiddleware);
 let dataProvider = new DataInterface(admin.database());
 
 app.post("/logIn", async (req, res) => {
+	let errors = validator.validate(req.body, [
+		{ variable: "username", variableText: "username", min: 0, max: 30 },
+		{ variable: "password", variableText: "password", min: 6, max: 1000 }
+	]);
+
+	if (errors.length !== 0) {
+		res.json({ status: "error", errors: errors });
+	}
+
 	let body = req.body;
 	let auth = await authenticate(body.username, body.password, dataProvider);
 
@@ -89,6 +108,15 @@ app.post("/logIn", async (req, res) => {
 });
 
 app.post("/createUser", async (req, res) => {
+	let errors = validator.validate(req.body, [
+		{ variable: "username", variableText: "username", min: 0, max: 30 },
+		{ variable: "password", variableText: "password", min: 6, max: 1000 }
+	]);
+
+	if (errors.length !== 0) {
+		res.json({ status: "error", errors: errors });
+	}
+
 	let body = req.body;
 	let auth = await register(body.username, body.password, dataProvider);
 
@@ -100,6 +128,16 @@ app.post("/createUser", async (req, res) => {
 });
 
 app.post("/createLighter", [authMiddleware], async (req, res) => {
+	let errors = validator.validate(req.body, [
+		{ variable: "number", variableText: "number", min: 0, max: 5000 },
+		{ variable: "color", variableText: "color", min: 2, max: 10 },
+		{ variable: "description", variableText: "description", min: 10 }
+	]);
+
+	if (errors.length !== 0) {
+		res.json({ status: "error", errors: errors });
+	}
+
 	let body = req.body;
 	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
@@ -118,6 +156,14 @@ app.post("/createLighter", [authMiddleware], async (req, res) => {
 });
 
 app.post("/claimLighter", [authMiddleware], async (req, res) => {
+	let errors = validator.validate(req.body, [
+		{ variable: "number", variableText: "number", min: 0, max: 5000 }
+	]);
+
+	if (errors.length !== 0) {
+		response.json({ status: "error", errors: errors });
+	}
+
 	let body = req.body;
 	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
@@ -130,6 +176,14 @@ app.post("/claimLighter", [authMiddleware], async (req, res) => {
 });
 
 app.post("/reportLoss", [authMiddleware], async (req, res) => {
+	let errors = validator.validate(req.body, [
+		{ variable: "number", variableText: "number", min: 0, max: 5000 }
+	]);
+
+	if (errors.length !== 0) {
+		response.json({ status: "error", errors: errors });
+	}
+
 	let body = req.body;
 	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
