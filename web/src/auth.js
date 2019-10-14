@@ -24,8 +24,9 @@ class Auth {
     }
   }
 
-  logout(cb) {
+  logout() {
     this.authenticated = false;
+    localStorage.removeItem('password');
   }
 
   get isAuthenticated() {

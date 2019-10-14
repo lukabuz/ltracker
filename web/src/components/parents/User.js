@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import StarRatings from 'react-star-ratings';
 
 import Lighter from '../children/Lighter';
 import Loader from '../children/Loader';
@@ -46,6 +47,18 @@ export class User extends Component {
     return (
       <>
         <div className="lighters-container">
+          <div className="stars-container">
+            <h4>{userPageURL}</h4>
+            <div className="push-left"></div>
+            <StarRatings
+              rating={4.3}
+              starDimension="25px"
+              starSpacing="3px"
+              starRatedColor="#ffb300"
+              starEmptyColor="#eeeeee"
+            />
+            <span>(4.3)</span>
+          </div>
           <h3>
             {userPageURL === this.props.username
               ? `You own ${ownedLighters.length} lighter(s):`
@@ -77,6 +90,11 @@ export class User extends Component {
               />
             );
           })}
+          {userPageURL === this.props.username ? (
+            <button className="btn red" onClick={this.props.handleSignOut}>
+              SIGN OUT
+            </button>
+          ) : null}
         </div>
       </>
     );

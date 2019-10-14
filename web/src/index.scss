@@ -38,7 +38,6 @@ body {
 .red {
   color: #e57373;
 
-  &:focus,
   &:hover {
     color: #ffcdd2;
   }
@@ -47,7 +46,6 @@ body {
 .green {
   color: #00c853;
 
-  &:focus,
   &:hover {
     color: #c5e1a5;
   }
@@ -56,7 +54,7 @@ body {
 .btn {
   width: 100%;
   border: 0;
-  background-color: #43a047;
+  background-color: #2e7d32;
   font-family: robotoBold;
   color: white;
   padding: 10px;
@@ -65,6 +63,10 @@ body {
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
     cursor: pointer;
+  }
+  &.red {
+    background-color: #d32f2f;
+    margin-bottom: 25px;
   }
 }
 
@@ -226,7 +228,7 @@ textarea {
 }
 
 .action-modal-container {
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,7 +242,7 @@ textarea {
     background-color: white;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
     padding: 20px 30px;
-    width: 65%;
+    width: 90%;
     border-radius: 10px;
 
     h1 {
@@ -340,10 +342,22 @@ textarea {
 
 .lighters-container {
   h3 {
-    font-family: robotoBold;
     font-weight: 400;
     font-size: 1.25rem;
     text-align: center;
+  }
+}
+
+.stars-container {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #c9c9c9;
+  align-items: center;
+  padding: 0px 30px 15px 30px;
+
+  span {
+    font-size: 0.75rem;
+    color: grey;
   }
 }
 

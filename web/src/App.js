@@ -11,6 +11,7 @@ import BottomBar from './components/children/BottomBar';
 import Modal from './components/children/Modal';
 import PrivateRoute from './components/children/PrivateRoute';
 
+import auth from './auth';
 import { claimLighter, reportLighter } from './api/APIUtils';
 
 export class App extends Component {
@@ -112,6 +113,13 @@ export class App extends Component {
     );
   };
 
+  handleSignOut = () => {
+    auth.logout();
+    this.setState({
+      password: '',
+    });
+  };
+
   render() {
     return (
       <BrowserRouter>
@@ -155,6 +163,7 @@ export class App extends Component {
               <User
                 handleClaimLighter={this.handleClaimLighter}
                 handleReportLighter={this.handleReportLighter}
+                handleSignOut={this.handleSignOut}
                 username={this.state.username}
                 password={this.state.password}
                 setModal={this.setModal}

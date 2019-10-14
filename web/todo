@@ -1,14 +1,12 @@
 //Todo
 
--Design a profile page
--Add signout button to profile page
+-Think of a way to calculate users' rating
 
 -Think of a way to convert (misspelled) lighter colors into css colors
 -Visualize the ledger for each lighter
 
 -Add a search functionality
 -Add a filter functionality
--Add a back key functionality
 
 //Completed
 
@@ -22,3 +20,6 @@
 
 -Organize components into seperate folders
 -Organize Modal component
+
+-Design a profile page
+-Add signout button to profile page
