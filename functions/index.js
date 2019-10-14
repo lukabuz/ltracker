@@ -10,6 +10,15 @@ const DataInterface = require("./data.js");
 //initialize firebase db
 admin.initializeApp();
 
+isJsonString = str => {
+	try {
+		JSON.parse(str);
+	} catch (e) {
+		return false;
+	}
+	return true;
+};
+
 authenticate = async (username, password, dataProvider) => {
 	return new Promise(async resolve => {
 		let userExists = await dataProvider.checkIfUserExists(username);
@@ -36,7 +45,7 @@ register = async (username, password, dataProvider) => {
 };
 
 authMiddleware = async (req, res, next) => {
-	let body = JSON.parse(req.body);
+	let body = req.body;
 	let auth = await authenticate(body.username, body.password, dataProvider);
 
 	if (auth) {
@@ -49,21 +58,24 @@ authMiddleware = async (req, res, next) => {
 	}
 };
 
+parsingMiddleware = (req, res, next) => {
+	if (isJsonString(req.body)) {
+		req.body = JSON.parse(req.body);
+	}
+	next();
+};
+
 const app = express();
 
 app.use(cors({ origin: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(parsingMiddleware);
 
 let dataProvider = new DataInterface(admin.database());
 
-app.post("/test", async (req, res) => {
-	res.json({ hello: "hello", body: req.body });
-	res.json({ hello: "hello", body: req.body });
-});
-
 app.post("/logIn", async (req, res) => {
-	let body = JSON.parse(req.body);
+	let body = req.body;
 	let auth = await authenticate(body.username, body.password, dataProvider);
 
 	if (auth) {
@@ -77,7 +89,7 @@ app.post("/logIn", async (req, res) => {
 });
 
 app.post("/createUser", async (req, res) => {
-	let body = JSON.parse(req.body);
+	let body = req.body;
 	let auth = await register(body.username, body.password, dataProvider);
 
 	if (auth) {
@@ -88,7 +100,7 @@ app.post("/createUser", async (req, res) => {
 });
 
 app.post("/createLighter", [authMiddleware], async (req, res) => {
-	let body = JSON.parse(req.body);
+	let body = req.body;
 	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
 	if (lighterExists) {
@@ -106,7 +118,7 @@ app.post("/createLighter", [authMiddleware], async (req, res) => {
 });
 
 app.post("/claimLighter", [authMiddleware], async (req, res) => {
-	let body = JSON.parse(req.body);
+	let body = req.body;
 	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
 	if (!lighterExists) {
@@ -118,7 +130,7 @@ app.post("/claimLighter", [authMiddleware], async (req, res) => {
 });
 
 app.post("/reportLoss", [authMiddleware], async (req, res) => {
-	let body = JSON.parse(req.body);
+	let body = req.body;
 	let lighterExists = await dataProvider.checkIfLighterExists(body.number);
 
 	if (!lighterExists) {

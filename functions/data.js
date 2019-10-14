@@ -33,10 +33,18 @@ module.exports = class DataInterface {
 		let usersRef = this.ref.child("users");
 		usersRef
 			.child(added_by)
-			.child("pulbic_info")
+			.child("public_info")
 			.child("lighters_added")
 			.transaction(function(lighters_added) {
 				return (lighters_added || 0) + 1;
+			});
+
+		usersRef
+			.child(added_by)
+			.child("public_info")
+			.child("credit_score")
+			.transaction(function(credit_score) {
+				return (credit_score || 2) + 1;
 			});
 	}
 
@@ -70,10 +78,18 @@ module.exports = class DataInterface {
 
 			usersRef
 				.child(lost_by)
-				.child("pulbic_info")
+				.child("public_info")
 				.child("lighters_lost")
 				.transaction(function(lighters_lost) {
 					return (lighters_lost || 0) + 1;
+				});
+
+			usersRef
+				.child(lost_by)
+				.child("public_info")
+				.child("credit_score")
+				.transaction(function(credit_score) {
+					return (credit_score || 2) - 1;
 				});
 
 			lighterRef.child("lost_by").set(lost_by);
@@ -84,14 +100,14 @@ module.exports = class DataInterface {
 			let userRef = this.ref
 				.child("users")
 				.child(user)
-				.child("pulbic_info");
+				.child("public_info");
 			userRef
 				.on("value", function(snapshot) {
 					let user = snapshot.val();
 					resolve(2 + user.lighters_added - user.lighters_lost);
 				})
 				.catch(err => {
-					resolve(0);
+					resolve(new Error(err));
 				});
 		});
 	}
@@ -119,7 +135,8 @@ module.exports = class DataInterface {
 			.set({
 				name: username,
 				lighters_added: 0,
-				lighters_lost: 0
+				lighters_lost: 0,
+				credit_score: 2
 			});
 		usersRef
 			.child(username)
